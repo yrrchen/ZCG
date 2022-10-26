@@ -1,0 +1,141 @@
+---
+title: "ZCG - Applied Financial Analytics - Data Cleaning"
+author: "Wiktoria Kuliczkowska"
+date: "21/10/2022"
+output: html_document
+---
+Load libraries and set working directory
+```{r}
+library(data.table)
+setwd("C:/Users/malgo/Dropbox/Domowe/A Wiktoria/TUM/Masters/Exchange/UZH - classes/Applied Financial Analytics/Data")
+```
+
+Import data
+```{r}
+Zurich <- fread(file = "Expenditures_Zurich.csv", stringsAsFactors=TRUE) 
+Zug <- fread(file = "Expenditures_Zug.csv", stringsAsFactors=TRUE) 
+Valais <- fread(file = "Expenditures_Valais.csv", stringsAsFactors=TRUE) 
+Berne <- fread(file = "Expenditures_Berne.csv", stringsAsFactors=TRUE) 
+Lucerne <- fread(file = "Expenditures_Lucerne.csv", stringsAsFactors=TRUE) 
+Uri <- fread(file = "Expenditures_Uri.csv", stringsAsFactors=TRUE) 
+Schwyz <- fread(file = "Expenditures_Schwyz.csv", stringsAsFactors=TRUE) 
+Obwalden <- fread(file = "Expenditures_Obwalden.csv", stringsAsFactors=TRUE) 
+Nidwalden <- fread(file = "Expenditures_Nidwalden.csv", stringsAsFactors=TRUE) 
+Glarus <- fread(file = "Expenditures_Glarus.csv", stringsAsFactors=TRUE) 
+Fribourg <- fread(file = "Expenditures_Fribourg.csv", stringsAsFactors=TRUE) 
+Solothurn <- fread(file = "Expenditures_Solothurn.csv", stringsAsFactors=TRUE) 
+Basel_Stadt <- fread(file = "Expenditures_Basel_Stadt.csv", stringsAsFactors=TRUE) 
+Basel_Landschaft <- fread(file = "Expenditures_Basel_Landschaft.csv", stringsAsFactors=TRUE) 
+Schaffhausen <- fread(file = "Expenditures_Schaffhausen.csv", stringsAsFactors=TRUE) 
+Appenzell_A <- fread(file = "Expenditures_Appenzell_A.csv", stringsAsFactors=TRUE) 
+Appenzell_I <- fread(file = "Expenditures_Appenzell_I.csv", stringsAsFactors=TRUE) 
+St_Gallen <- fread(file = "Expenditures_St_Gallen.csv", stringsAsFactors=TRUE)
+Graubuenden <- fread(file = "Expenditures_Graubuenden.csv", stringsAsFactors=TRUE) 
+Aargau <- fread(file = "Expenditures_Aargau.csv", stringsAsFactors=TRUE) 
+Thurgau <- fread(file = "Expenditures_Thurgau.csv", stringsAsFactors=TRUE) 
+Ticino <- fread(file = "Expenditures_Ticino.csv", stringsAsFactors=TRUE) 
+Vaud <- fread(file = "Expenditures_Vaud.csv", stringsAsFactors=TRUE) 
+Neuchatel <- fread(file = "Expenditures_Neuchatel.csv", stringsAsFactors=TRUE) 
+Geneva <- fread(file = "Expenditures_Geneva.csv", stringsAsFactors=TRUE) 
+Jura <- fread(file = "Expenditures_Jura.csv", stringsAsFactors=TRUE) 
+
+
+GDP <- fread(file = "GDP.csv", stringsAsFactors=TRUE) 
+colnames(GDP) <- as.character(unlist(GDP[1,]))
+GDP <- GDP[-1, ]
+# change the canton names where needed
+GDP$Canton <- as.character(GDP$Canton)
+GDP$Canton[12] <- "Basel_Stadt"
+GDP$Canton[13] <- "Basel_Landschaft"
+GDP$Canton[15] <- "Appenzell_A"
+GDP$Canton[16] <- "Appenzell_I"
+GDP$Canton[17] <- "St_Gallen"
+GDP$Canton[18] <- "Graubuenden"
+GDP$Canton[24] <- "Neuchatel"
+```
+
+Still to do:
+- connect with GDP table
+- decide what to do about GDP in 2019, whether to use it (since it is projected)
+- Delete columns which have no values
+
+
+Function for Pivoting the table, adding column names and column with Canton name
+```{r}
+data_cleaning <- function(data_table, canton) {
+  Table.t <- t(data_table)
+  colnames(Table.t) <- as.character(unlist(Table.t[1,]))
+  Table.t <- Table.t[-1, ]
+  colnames(Table.t)[1] <- "Year"
+  Table.t <- as.data.table(Table.t)
+  nrows <- nrow(Table.t)
+  canton_name <- as.list(rep(canton, nrows))
+  Table.t$Canton <- canton_name
+  return(Table.t)
+}
+```
+
+Apply the data_cleaning function to all the cantons
+```{r}
+Valais.t <- data_cleaning(Valais, "Valais")
+Zug.t <- data_cleaning(Zug, "Zug")
+Zurich.t <- data_cleaning(Zurich, "Zurich")
+Berne.t <- data_cleaning(Berne, "Berne")
+Lucerne.t <- data_cleaning(Lucerne, "Lucerne")
+Uri.t <- data_cleaning(Uri, "Uri")
+Schwyz.t <- data_cleaning(Schwyz, "Schwyz")
+Obwalden.t <- data_cleaning(Obwalden, "Obwalden")
+Nidwalden.t <- data_cleaning(Nidwalden, "Nidwalden")
+Glarus.t <- data_cleaning(Glarus, "Glarus")
+Fribourg.t <- data_cleaning(Fribourg, "Fribourg")
+Solothurn.t <- data_cleaning(Solothurn, "Solothurn")
+Basel_Stadt.t <- data_cleaning(Basel_Stadt, "Basel_Stadt")
+Basel_Landschaft.t <- data_cleaning(Basel_Landschaft, "Basel_Landschaft")
+Schaffhausen.t <- data_cleaning(Schaffhausen, "Schaffhausen")
+Appenzell_A.t <- data_cleaning(Appenzell_A, "Appenzell_A")
+Appenzell_I.t <- data_cleaning(Appenzell_I, "Appenzell_I")
+St_Gallen.t <- data_cleaning(St_Gallen, "St_Gallen")
+Graubuenden.t <- data_cleaning(Graubuenden, "Graubuenden")
+Aargau.t <- data_cleaning(Aargau, "Aargau") 
+Thurgau.t <- data_cleaning(Thurgau, "Thurgau")
+Ticino.t <- data_cleaning(Ticino, "Ticino")
+Vaud.t <- data_cleaning(Vaud, "Vaud")
+Neuchatel.t <- data_cleaning(Neuchatel, "Neuchatel")
+Geneva.t <- data_cleaning(Geneva, "Geneva")
+Jura.t <- data_cleaning(Jura, "Jura")
+```
+
+Append all the cantonal tables
+```{r}
+Cantons_Financials <- rbind(Valais.t, Zug.t, Zurich.t, Berne.t, Lucerne.t, Uri.t, 
+                            Schwyz.t, Obwalden.t, Nidwalden.t, Glarus.t, Fribourg.t,
+                            Solothurn.t, Basel_Stadt.t, Basel_Landschaft.t, 
+                            Schaffhausen.t, Appenzell_A.t, Appenzell_I.t, St_Gallen.t,
+                            Graubuenden.t, Aargau.t, Thurgau.t, Ticino.t, Vaud.t,
+                            Neuchatel.t, Geneva.t, Jura.t)
+
+# change all necessary columns to numerical
+Cantons_Financials <- as.data.table(lapply(Cantons_Financials, function(y) gsub(",", "", y)))
+Cantons_Financials[, 2:82] <- lapply(Cantons_Financials[, 2:82], as.numeric)
+Cantons_Financials$Year <- as.factor(Cantons_Financials$Year)
+Cantons_Financials$Canton <- as.factor(Cantons_Financials$Canton)
+```
+
+GDP - change table from wide to long (columns: Canton, Year, Value)
+```{r}
+GDP_long <- melt(GDP, id.vars = "Canton", measure.vars = c("2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019p"), variable.name = "Year", value.name = "GDP")
+
+# Change GDP column to be of type numeric
+GDP_long$GDP <- gsub(",","", GDP_long$GDP)
+GDP_long$GDP <- as.numeric(GDP_long$GDP)
+
+# multiply all GDP values time 1000 to get to the same units as for Expenditures
+GDP_long$GDP <- GDP_long$GDP * 1000
+```
+
+
+Export tables
+```{r}
+fwrite(GDP_long, "GDP_Long.csv")
+fwrite(Cantons_Financials, "Cantons_Financials.csv")
+```
